@@ -105,6 +105,25 @@ function AdminPage() {
     setDescription("");
   };
 
+  const exportToExcel = () => {
+    if (parcels.length === 0) return;
+    const rows = parcels.map((p) => ({
+      "Tracking Number": p.tracking_number,
+      "Receiver": namesById[p.receiver_id] ?? "—",
+      "Description": p.description ?? "",
+      "Status": p.status.charAt(0).toUpperCase() + p.status.slice(1),
+      "Sent At": new Date(p.created_at).toLocaleString(),
+      "Delivered At": p.delivered_at ? new Date(p.delivered_at).toLocaleString() : "",
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [{ wch: 18 }, { wch: 22 }, { wch: 30 }, { wch: 12 }, { wch: 22 }, { wch: 22 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Parcels");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `parcels-${stamp}.xlsx`);
+    toast.success("Excel file downloaded");
+  };
+
   const stats = {
     total: parcels.length,
     dispatched: parcels.filter((p) => p.status === "dispatched").length,
