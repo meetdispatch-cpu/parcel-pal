@@ -14,8 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Send, Package as PackageIcon, CheckCircle2, Clock } from "lucide-react";
+import { Send, Package as PackageIcon, CheckCircle2, Clock, Download } from "lucide-react";
 import { toast } from "sonner";
+import * as XLSX from "xlsx";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Dashboard — ParcelTrack" }] }),
@@ -104,6 +105,25 @@ function AdminPage() {
     setDescription("");
   };
 
+  const exportToExcel = () => {
+    if (parcels.length === 0) return;
+    const rows = parcels.map((p) => ({
+      "Tracking Number": p.tracking_number,
+      "Receiver": namesById[p.receiver_id] ?? "—",
+      "Description": p.description ?? "",
+      "Status": p.status.charAt(0).toUpperCase() + p.status.slice(1),
+      "Sent At": new Date(p.created_at).toLocaleString(),
+      "Delivered At": p.delivered_at ? new Date(p.delivered_at).toLocaleString() : "",
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [{ wch: 18 }, { wch: 22 }, { wch: 30 }, { wch: 12 }, { wch: 22 }, { wch: 22 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Parcels");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `parcels-${stamp}.xlsx`);
+    toast.success("Excel file downloaded");
+  };
+
   const stats = {
     total: parcels.length,
     dispatched: parcels.filter((p) => p.status === "dispatched").length,
@@ -120,12 +140,16 @@ function AdminPage() {
         <StatCard icon={CheckCircle2} label="Delivered" value={stats.delivered} accent="success" />
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 gap-2 flex-wrap">
         <h2 className="text-lg font-semibold">All parcels</h2>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={exportToExcel} disabled={parcels.length === 0}>
+            <Download className="size-4 mr-2" /> Download Excel
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
@@ -155,6 +179,7 @@ function AdminPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {parcels.length === 0 ? (
