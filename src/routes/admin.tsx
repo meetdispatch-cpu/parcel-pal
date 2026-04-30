@@ -121,12 +121,16 @@ function AdminPage() {
         <StatCard icon={CheckCircle2} label="Delivered" value={stats.delivered} accent="success" />
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 gap-2 flex-wrap">
         <h2 className="text-lg font-semibold">All parcels</h2>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={exportToExcel} disabled={parcels.length === 0}>
+            <Download className="size-4 mr-2" /> Download Excel
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
