@@ -160,6 +160,7 @@ function AdminPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {parcels.length === 0 ? (
