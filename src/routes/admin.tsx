@@ -147,6 +147,8 @@ function AdminPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
 
   return (
+    <>
+    <SendParcelAnimation open={showAnim} onComplete={() => setShowAnim(false)} />
     <DashboardShell title="Sender Dashboard" subtitle="Dispatch and track parcels in real time">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <StatCard icon={PackageIcon} label="Total parcels" value={stats.total} />
