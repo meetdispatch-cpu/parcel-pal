@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Send, Package as PackageIcon, CheckCircle2, Clock, Download } from "lucide-react";
+import { Send, Package as PackageIcon, CheckCircle2, Clock, Download, Users, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import { SendParcelAnimation } from "@/components/SendParcelAnimation";
@@ -51,6 +51,7 @@ function AdminPage() {
   const [boxQuantity, setBoxQuantity] = useState<number>(1);
   const [sending, setSending] = useState(false);
   const [showAnim, setShowAnim] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || role !== "admin")) navigate({ to: "/login" });
@@ -117,6 +118,22 @@ function AdminPage() {
     setBoxQuantity(1);
   };
 
+  const removeReceiver = async (receiverId: string, name: string) => {
+    if (!confirm(`Remove receiver "${name}"? Their parcels will also be deleted. This cannot be undone.`)) return;
+    // Delete parcels addressed to this receiver (sent by current admin)
+    const { error: pErr } = await supabase.from("parcels").delete().eq("receiver_id", receiverId);
+    if (pErr) return toast.error(pErr.message);
+    // Delete role then profile
+    const { error: rErr } = await supabase.from("user_roles").delete().eq("user_id", receiverId);
+    if (rErr) return toast.error(rErr.message);
+    const { error: prErr } = await supabase.from("profiles").delete().eq("id", receiverId);
+    if (prErr) return toast.error(prErr.message);
+    setReceivers((prev) => prev.filter((r) => r.id !== receiverId));
+    setParcels((prev) => prev.filter((p) => p.receiver_id !== receiverId));
+    if (selectedReceiver === receiverId) setSelectedReceiver("");
+    toast.success(`Receiver "${name}" removed`);
+  };
+
   const exportToExcel = () => {
     if (parcels.length === 0) return;
     const rows = parcels.map((p) => ({
@@ -162,6 +179,35 @@ function AdminPage() {
           <Button variant="outline" onClick={exportToExcel} disabled={parcels.length === 0}>
             <Download className="size-4 mr-2" /> Download Excel
           </Button>
+          <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Users className="size-4 mr-2" /> Manage Receivers
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Receivers</DialogTitle></DialogHeader>
+              <div className="space-y-2 py-2 max-h-[60vh] overflow-y-auto">
+                {receivers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">No receivers yet.</p>
+                ) : (
+                  receivers.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between gap-3 p-3 rounded-md border">
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{r.display_name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {parcels.filter((p) => p.receiver_id === r.id).length} parcel(s)
+                        </div>
+                      </div>
+                      <Button variant="destructive" size="sm" onClick={() => removeReceiver(r.id, r.display_name)}>
+                        <Trash2 className="size-4 mr-1.5" /> Remove
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="transition-all hover:scale-105 hover:shadow-lg active:scale-95">
