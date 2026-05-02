@@ -220,6 +220,8 @@ function AdminPage() {
                   <div className="font-mono text-sm font-semibold">{p.tracking_number}</div>
                   <div className="text-xs text-muted-foreground truncate">
                     To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span>
+                    {p.location ? ` · 📍 ${p.location}` : ""}
+                    {` · 📦 ${p.box_quantity} box${p.box_quantity > 1 ? "es" : ""}`}
                     {p.description ? ` · ${p.description}` : ""}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">
