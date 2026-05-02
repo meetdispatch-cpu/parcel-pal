@@ -179,6 +179,35 @@ function AdminPage() {
           <Button variant="outline" onClick={exportToExcel} disabled={parcels.length === 0}>
             <Download className="size-4 mr-2" /> Download Excel
           </Button>
+          <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Users className="size-4 mr-2" /> Manage Receivers
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Receivers</DialogTitle></DialogHeader>
+              <div className="space-y-2 py-2 max-h-[60vh] overflow-y-auto">
+                {receivers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">No receivers yet.</p>
+                ) : (
+                  receivers.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between gap-3 p-3 rounded-md border">
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{r.display_name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {parcels.filter((p) => p.receiver_id === r.id).length} parcel(s)
+                        </div>
+                      </div>
+                      <Button variant="destructive" size="sm" onClick={() => removeReceiver(r.id, r.display_name)}>
+                        <Trash2 className="size-4 mr-1.5" /> Remove
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="transition-all hover:scale-105 hover:shadow-lg active:scale-95">
