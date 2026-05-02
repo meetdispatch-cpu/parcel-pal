@@ -178,6 +178,16 @@ function AdminPage() {
                   <p className="text-xs text-muted-foreground">No receivers exist yet. Create a receiver account from the sign-up page.</p>
                 )}
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="loc">Location</Label>
+                  <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="qty">Box quantity</Label>
+                  <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="desc">Description (optional)</Label>
                 <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What's inside?" />
