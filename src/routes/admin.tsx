@@ -243,6 +243,7 @@ function AdminPage() {
         </div>
       )}
     </DashboardShell>
+    </>
   );
 }
 
