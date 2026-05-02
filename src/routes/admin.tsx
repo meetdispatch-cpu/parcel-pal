@@ -46,6 +46,8 @@ function AdminPage() {
   const [open, setOpen] = useState(false);
   const [selectedReceiver, setSelectedReceiver] = useState<string>("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [boxQuantity, setBoxQuantity] = useState<number>(1);
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
