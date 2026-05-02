@@ -162,7 +162,9 @@ function AdminPage() {
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
+              <Button className="transition-all hover:scale-105 hover:shadow-lg active:scale-95">
+                <Send className="size-4 mr-2 transition-transform group-hover:translate-x-0.5" /> Send Parcel
+              </Button>
             </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
