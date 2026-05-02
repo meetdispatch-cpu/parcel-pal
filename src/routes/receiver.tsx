@@ -21,6 +21,8 @@ type Parcel = {
   status: "dispatched" | "delivered";
   created_at: string;
   delivered_at: string | null;
+  location: string | null;
+  box_quantity: number;
 };
 
 function ReceiverPage() {
@@ -115,6 +117,8 @@ function ReceiverPage() {
                   <div className="font-mono text-sm font-semibold">{p.tracking_number}</div>
                   <div className="text-xs text-muted-foreground truncate">
                     From <span className="font-medium text-foreground">{senderNames[p.sender_id] ?? "—"}</span>
+                    {p.location ? ` · 📍 ${p.location}` : ""}
+                    {` · 📦 ${p.box_quantity} box${p.box_quantity > 1 ? "es" : ""}`}
                     {p.description ? ` · ${p.description}` : ""}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">

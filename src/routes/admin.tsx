@@ -31,6 +31,8 @@ type Parcel = {
   status: "dispatched" | "delivered";
   created_at: string;
   delivered_at: string | null;
+  location: string | null;
+  box_quantity: number;
 };
 
 type Receiver = { id: string; display_name: string };
@@ -44,6 +46,8 @@ function AdminPage() {
   const [open, setOpen] = useState(false);
   const [selectedReceiver, setSelectedReceiver] = useState<string>("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [boxQuantity, setBoxQuantity] = useState<number>(1);
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
@@ -92,17 +96,22 @@ function AdminPage() {
 
   const sendParcel = async () => {
     if (!user || !selectedReceiver) return toast.error("Select a receiver");
+    if (!boxQuantity || boxQuantity < 1) return toast.error("Box quantity must be at least 1");
     setSending(true);
     const { error } = await supabase.from("parcels").insert({
       sender_id: user.id,
       receiver_id: selectedReceiver,
       description: description || null,
+      location: location || null,
+      box_quantity: boxQuantity,
     });
     setSending(false);
     if (error) return toast.error(error.message);
     toast.success("Parcel dispatched!");
     setOpen(false);
     setDescription("");
+    setLocation("");
+    setBoxQuantity(1);
   };
 
   const exportToExcel = () => {
@@ -110,13 +119,15 @@ function AdminPage() {
     const rows = parcels.map((p) => ({
       "Tracking Number": p.tracking_number,
       "Receiver": namesById[p.receiver_id] ?? "—",
+      "Location": p.location ?? "",
+      "Boxes": p.box_quantity,
       "Description": p.description ?? "",
       "Status": p.status.charAt(0).toUpperCase() + p.status.slice(1),
       "Sent At": new Date(p.created_at).toLocaleString(),
       "Delivered At": p.delivered_at ? new Date(p.delivered_at).toLocaleString() : "",
     }));
     const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [{ wch: 18 }, { wch: 22 }, { wch: 30 }, { wch: 12 }, { wch: 22 }, { wch: 22 }];
+    ws["!cols"] = [{ wch: 18 }, { wch: 22 }, { wch: 22 }, { wch: 8 }, { wch: 30 }, { wch: 12 }, { wch: 22 }, { wch: 22 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Parcels");
     const stamp = new Date().toISOString().slice(0, 10);
@@ -167,6 +178,16 @@ function AdminPage() {
                   <p className="text-xs text-muted-foreground">No receivers exist yet. Create a receiver account from the sign-up page.</p>
                 )}
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="loc">Location</Label>
+                  <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="qty">Box quantity</Label>
+                  <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="desc">Description (optional)</Label>
                 <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What's inside?" />
@@ -199,6 +220,8 @@ function AdminPage() {
                   <div className="font-mono text-sm font-semibold">{p.tracking_number}</div>
                   <div className="text-xs text-muted-foreground truncate">
                     To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span>
+                    {p.location ? ` · 📍 ${p.location}` : ""}
+                    {` · 📦 ${p.box_quantity} box${p.box_quantity > 1 ? "es" : ""}`}
                     {p.description ? ` · ${p.description}` : ""}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">
