@@ -118,6 +118,22 @@ function AdminPage() {
     setBoxQuantity(1);
   };
 
+  const removeReceiver = async (receiverId: string, name: string) => {
+    if (!confirm(`Remove receiver "${name}"? Their parcels will also be deleted. This cannot be undone.`)) return;
+    // Delete parcels addressed to this receiver (sent by current admin)
+    const { error: pErr } = await supabase.from("parcels").delete().eq("receiver_id", receiverId);
+    if (pErr) return toast.error(pErr.message);
+    // Delete role then profile
+    const { error: rErr } = await supabase.from("user_roles").delete().eq("user_id", receiverId);
+    if (rErr) return toast.error(rErr.message);
+    const { error: prErr } = await supabase.from("profiles").delete().eq("id", receiverId);
+    if (prErr) return toast.error(prErr.message);
+    setReceivers((prev) => prev.filter((r) => r.id !== receiverId));
+    setParcels((prev) => prev.filter((p) => p.receiver_id !== receiverId));
+    if (selectedReceiver === receiverId) setSelectedReceiver("");
+    toast.success(`Receiver "${name}" removed`);
+  };
+
   const exportToExcel = () => {
     if (parcels.length === 0) return;
     const rows = parcels.map((p) => ({
