@@ -21,6 +21,8 @@ type Parcel = {
   status: "dispatched" | "delivered";
   created_at: string;
   delivered_at: string | null;
+  location: string | null;
+  box_quantity: number;
 };
 
 function ReceiverPage() {
