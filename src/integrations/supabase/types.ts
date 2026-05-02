@@ -16,30 +16,36 @@ export type Database = {
     Tables: {
       parcels: {
         Row: {
+          box_quantity: number
           created_at: string
           delivered_at: string | null
           description: string | null
           id: string
+          location: string | null
           receiver_id: string
           sender_id: string
           status: Database["public"]["Enums"]["parcel_status"]
           tracking_number: string
         }
         Insert: {
+          box_quantity?: number
           created_at?: string
           delivered_at?: string | null
           description?: string | null
           id?: string
+          location?: string | null
           receiver_id: string
           sender_id: string
           status?: Database["public"]["Enums"]["parcel_status"]
           tracking_number?: string
         }
         Update: {
+          box_quantity?: number
           created_at?: string
           delivered_at?: string | null
           description?: string | null
           id?: string
+          location?: string | null
           receiver_id?: string
           sender_id?: string
           status?: Database["public"]["Enums"]["parcel_status"]
