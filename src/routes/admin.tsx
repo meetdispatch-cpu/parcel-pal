@@ -17,6 +17,7 @@ import {
 import { Send, Package as PackageIcon, CheckCircle2, Clock, Download } from "lucide-react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import { SendParcelAnimation } from "@/components/SendParcelAnimation";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Dashboard — ParcelTrack" }] }),
@@ -49,6 +50,7 @@ function AdminPage() {
   const [location, setLocation] = useState("");
   const [boxQuantity, setBoxQuantity] = useState<number>(1);
   const [sending, setSending] = useState(false);
+  const [showAnim, setShowAnim] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || role !== "admin")) navigate({ to: "/login" });
@@ -107,8 +109,9 @@ function AdminPage() {
     });
     setSending(false);
     if (error) return toast.error(error.message);
-    toast.success("Parcel dispatched!");
     setOpen(false);
+    setShowAnim(true);
+    toast.success("Parcel dispatched!");
     setDescription("");
     setLocation("");
     setBoxQuantity(1);
@@ -144,6 +147,8 @@ function AdminPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
 
   return (
+    <>
+    <SendParcelAnimation open={showAnim} onComplete={() => setShowAnim(false)} />
     <DashboardShell title="Sender Dashboard" subtitle="Dispatch and track parcels in real time">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <StatCard icon={PackageIcon} label="Total parcels" value={stats.total} />
@@ -159,7 +164,9 @@ function AdminPage() {
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button><Send className="size-4 mr-2" /> Send Parcel</Button>
+              <Button className="transition-all hover:scale-105 hover:shadow-lg active:scale-95">
+                <Send className="size-4 mr-2 transition-transform group-hover:translate-x-0.5" /> Send Parcel
+              </Button>
             </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
@@ -236,6 +243,7 @@ function AdminPage() {
         </div>
       )}
     </DashboardShell>
+    </>
   );
 }
 
