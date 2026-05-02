@@ -17,6 +17,7 @@ import {
 import { Send, Package as PackageIcon, CheckCircle2, Clock, Download } from "lucide-react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import { SendParcelAnimation } from "@/components/SendParcelAnimation";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Dashboard — ParcelTrack" }] }),
