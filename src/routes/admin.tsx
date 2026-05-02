@@ -96,17 +96,22 @@ function AdminPage() {
 
   const sendParcel = async () => {
     if (!user || !selectedReceiver) return toast.error("Select a receiver");
+    if (!boxQuantity || boxQuantity < 1) return toast.error("Box quantity must be at least 1");
     setSending(true);
     const { error } = await supabase.from("parcels").insert({
       sender_id: user.id,
       receiver_id: selectedReceiver,
       description: description || null,
+      location: location || null,
+      box_quantity: boxQuantity,
     });
     setSending(false);
     if (error) return toast.error(error.message);
     toast.success("Parcel dispatched!");
     setOpen(false);
     setDescription("");
+    setLocation("");
+    setBoxQuantity(1);
   };
 
   const exportToExcel = () => {
