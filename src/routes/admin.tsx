@@ -50,6 +50,7 @@ function AdminPage() {
   const [location, setLocation] = useState("");
   const [boxQuantity, setBoxQuantity] = useState<number>(1);
   const [sending, setSending] = useState(false);
+  const [showAnim, setShowAnim] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || role !== "admin")) navigate({ to: "/login" });
