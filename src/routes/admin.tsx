@@ -109,8 +109,9 @@ function AdminPage() {
     });
     setSending(false);
     if (error) return toast.error(error.message);
-    toast.success("Parcel dispatched!");
     setOpen(false);
+    setShowAnim(true);
+    toast.success("Parcel dispatched!");
     setDescription("");
     setLocation("");
     setBoxQuantity(1);
