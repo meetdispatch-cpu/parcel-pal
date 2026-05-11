@@ -98,16 +98,17 @@ function AdminPage() {
   }, [user, role]);
 
   const sendParcel = async () => {
-    if (!user || !selectedReceiver) return toast.error("Select a receiver");
+    if (!user) return;
+    if (!location.trim()) return toast.error("Location is required");
     if (!boxQuantity || boxQuantity < 1) return toast.error("Box quantity must be at least 1");
     setSending(true);
     const { error } = await supabase.from("parcels").insert({
       sender_id: user.id,
-      receiver_id: selectedReceiver,
+      receiver_id: null,
       description: description || null,
-      location: location || null,
+      location: location.trim(),
       box_quantity: boxQuantity,
-    });
+    } as never);
     setSending(false);
     if (error) return toast.error(error.message);
     setOpen(false);
