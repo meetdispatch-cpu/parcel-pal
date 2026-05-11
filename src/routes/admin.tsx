@@ -28,7 +28,7 @@ type Parcel = {
   id: string;
   tracking_number: string;
   description: string | null;
-  receiver_id: string;
+  receiver_id: string | null;
   status: "dispatched" | "delivered";
   created_at: string;
   delivered_at: string | null;
