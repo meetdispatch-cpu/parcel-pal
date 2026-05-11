@@ -139,7 +139,7 @@ function AdminPage() {
     if (parcels.length === 0) return;
     const rows = parcels.map((p) => ({
       "Tracking Number": p.tracking_number,
-      "Receiver": namesById[p.receiver_id] ?? "—",
+      "Receiver": p.receiver_id ? (namesById[p.receiver_id] ?? "—") : "—",
       "Location": p.location ?? "",
       "Boxes": p.box_quantity,
       "Description": p.description ?? "",
