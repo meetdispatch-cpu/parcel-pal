@@ -219,28 +219,12 @@ function AdminPage() {
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>Receiver</Label>
-                <Select value={selectedReceiver} onValueChange={setSelectedReceiver}>
-                  <SelectTrigger><SelectValue placeholder="Select receiver" /></SelectTrigger>
-                  <SelectContent>
-                    {receivers.map((r) => (
-                      <SelectItem key={r.id} value={r.id}>{r.display_name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {receivers.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No receivers exist yet. Create a receiver account from the sign-up page.</p>
-                )}
+                <Label htmlFor="loc">Location</Label>
+                <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="loc">Location</Label>
-                  <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="qty">Box quantity</Label>
-                  <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="qty">Box quantity</Label>
+                <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="desc">Description (optional)</Label>
@@ -248,7 +232,7 @@ function AdminPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={sendParcel} disabled={sending || !selectedReceiver}>
+              <Button onClick={sendParcel} disabled={sending || !location.trim()}>
                 {sending ? "Sending…" : "Dispatch"}
               </Button>
             </DialogFooter>
