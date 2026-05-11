@@ -257,7 +257,7 @@ function AdminPage() {
                 <div className="min-w-0">
                   <div className="font-mono text-sm font-semibold">{p.tracking_number}</div>
                   <div className="text-xs text-muted-foreground truncate">
-                    To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span>
+                    {p.receiver_id ? <>To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span></> : <span className="font-medium text-foreground">Parcel</span>}
                     {p.location ? ` · 📍 ${p.location}` : ""}
                     {` · 📦 ${p.box_quantity} box${p.box_quantity > 1 ? "es" : ""}`}
                     {p.description ? ` · ${p.description}` : ""}
