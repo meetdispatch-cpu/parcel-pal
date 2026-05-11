@@ -28,7 +28,7 @@ type Parcel = {
   id: string;
   tracking_number: string;
   description: string | null;
-  receiver_id: string;
+  receiver_id: string | null;
   status: "dispatched" | "delivered";
   created_at: string;
   delivered_at: string | null;
@@ -98,16 +98,17 @@ function AdminPage() {
   }, [user, role]);
 
   const sendParcel = async () => {
-    if (!user || !selectedReceiver) return toast.error("Select a receiver");
+    if (!user) return;
+    if (!location.trim()) return toast.error("Location is required");
     if (!boxQuantity || boxQuantity < 1) return toast.error("Box quantity must be at least 1");
     setSending(true);
     const { error } = await supabase.from("parcels").insert({
       sender_id: user.id,
-      receiver_id: selectedReceiver,
+      receiver_id: null,
       description: description || null,
-      location: location || null,
+      location: location.trim(),
       box_quantity: boxQuantity,
-    });
+    } as never);
     setSending(false);
     if (error) return toast.error(error.message);
     setOpen(false);
@@ -138,7 +139,7 @@ function AdminPage() {
     if (parcels.length === 0) return;
     const rows = parcels.map((p) => ({
       "Tracking Number": p.tracking_number,
-      "Receiver": namesById[p.receiver_id] ?? "—",
+      "Receiver": p.receiver_id ? (namesById[p.receiver_id] ?? "—") : "—",
       "Location": p.location ?? "",
       "Boxes": p.box_quantity,
       "Description": p.description ?? "",
@@ -218,28 +219,12 @@ function AdminPage() {
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>Receiver</Label>
-                <Select value={selectedReceiver} onValueChange={setSelectedReceiver}>
-                  <SelectTrigger><SelectValue placeholder="Select receiver" /></SelectTrigger>
-                  <SelectContent>
-                    {receivers.map((r) => (
-                      <SelectItem key={r.id} value={r.id}>{r.display_name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {receivers.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No receivers exist yet. Create a receiver account from the sign-up page.</p>
-                )}
+                <Label htmlFor="loc">Location</Label>
+                <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="loc">Location</Label>
-                  <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="qty">Box quantity</Label>
-                  <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="qty">Box quantity</Label>
+                <Input id="qty" type="number" min={1} value={boxQuantity} onChange={(e) => setBoxQuantity(Math.max(1, parseInt(e.target.value) || 1))} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="desc">Description (optional)</Label>
@@ -247,7 +232,7 @@ function AdminPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={sendParcel} disabled={sending || !selectedReceiver}>
+              <Button onClick={sendParcel} disabled={sending || !location.trim()}>
                 {sending ? "Sending…" : "Dispatch"}
               </Button>
             </DialogFooter>
@@ -272,7 +257,7 @@ function AdminPage() {
                 <div className="min-w-0">
                   <div className="font-mono text-sm font-semibold">{p.tracking_number}</div>
                   <div className="text-xs text-muted-foreground truncate">
-                    To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span>
+                    {p.receiver_id ? <>To <span className="font-medium text-foreground">{namesById[p.receiver_id] ?? "—"}</span></> : <span className="font-medium text-foreground">Parcel</span>}
                     {p.location ? ` · 📍 ${p.location}` : ""}
                     {` · 📦 ${p.box_quantity} box${p.box_quantity > 1 ? "es" : ""}`}
                     {p.description ? ` · ${p.description}` : ""}

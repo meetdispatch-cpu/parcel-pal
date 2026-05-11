@@ -22,7 +22,7 @@ export type Database = {
           description: string | null
           id: string
           location: string | null
-          receiver_id: string
+          receiver_id: string | null
           sender_id: string
           status: Database["public"]["Enums"]["parcel_status"]
           tracking_number: string
@@ -34,7 +34,7 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
-          receiver_id: string
+          receiver_id?: string | null
           sender_id: string
           status?: Database["public"]["Enums"]["parcel_status"]
           tracking_number?: string
@@ -46,7 +46,7 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
-          receiver_id?: string
+          receiver_id?: string | null
           sender_id?: string
           status?: Database["public"]["Enums"]["parcel_status"]
           tracking_number?: string
