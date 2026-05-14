@@ -99,12 +99,13 @@ function AdminPage() {
 
   const sendParcel = async () => {
     if (!user) return;
+    if (!selectedReceiver) return toast.error("Please select a receiver");
     if (!location.trim()) return toast.error("Location is required");
     if (!boxQuantity || boxQuantity < 1) return toast.error("Box quantity must be at least 1");
     setSending(true);
     const { error } = await supabase.from("parcels").insert({
       sender_id: user.id,
-      receiver_id: null,
+      receiver_id: selectedReceiver,
       description: description || null,
       location: location.trim(),
       box_quantity: boxQuantity,
