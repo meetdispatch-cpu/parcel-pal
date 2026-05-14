@@ -244,7 +244,7 @@ function AdminPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={sendParcel} disabled={sending || !location.trim()}>
+              <Button onClick={sendParcel} disabled={sending || !location.trim() || !selectedReceiver}>
                 {sending ? "Sending…" : "Dispatch"}
               </Button>
             </DialogFooter>
