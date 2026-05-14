@@ -219,6 +219,17 @@ function AdminPage() {
           <DialogContent>
             <DialogHeader><DialogTitle>Dispatch a new parcel</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="recv">Receiver</Label>
+              <Select value={selectedReceiver} onValueChange={setSelectedReceiver}>
+                <SelectTrigger id="recv"><SelectValue placeholder={receivers.length ? "Select a receiver" : "No receivers available"} /></SelectTrigger>
+                <SelectContent>
+                  {receivers.map((r) => (
+                    <SelectItem key={r.id} value={r.id}>{r.display_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
               <div className="space-y-2">
                 <Label htmlFor="loc">Location</Label>
                 <Input id="loc" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New York, NY" />
