@@ -2,12 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Package, Truck, CheckCircle2 } from "lucide-react";
+import { AlignCenterHorizontal, Truck, CheckCircle2, Package } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ParcelTrack — Modern Package Tracking" },
+      { title: "Pu Parcel — Modern Package Tracking" },
       { name: "description", content: "Send and track parcels in real time." },
     ],
   }),
@@ -30,9 +30,9 @@ function Index() {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="size-9 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-hero)" }}>
-              <Package className="size-5 text-primary-foreground" />
+              <AlignCenterHorizontal className="size-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">ParcelTrack</span>
+            <span className="font-bold text-lg">Pu Parcel</span>
           </div>
           <Button onClick={() => navigate({ to: "/login" })}>Sign in</Button>
         </div>
