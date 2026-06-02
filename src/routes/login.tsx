@@ -7,10 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Package } from "lucide-react";
+import { AlignCenterHorizontal, Package } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in — ParcelTrack" }] }),
+  head: () => ({ meta: [{ title: "Sign in — Pu Parcel" }] }),
   component: LoginPage,
 });
 
@@ -64,9 +64,9 @@ function LoginPage() {
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="size-10 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-hero)" }}>
-            <Package className="size-5 text-primary-foreground" />
+            <AlignCenterHorizontal className="size-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-xl">ParcelTrack</span>
+          <span className="font-bold text-xl">Pu Parcel</span>
         </Link>
 
         <Card className="p-6" style={{ boxShadow: "var(--shadow-elegant)" }}>

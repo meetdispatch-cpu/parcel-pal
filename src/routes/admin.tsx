@@ -20,7 +20,7 @@ import * as XLSX from "xlsx";
 import { SendParcelAnimation } from "@/components/SendParcelAnimation";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin Dashboard — ParcelTrack" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard — Pu Parcel" }] }),
   component: AdminPage,
 });
 

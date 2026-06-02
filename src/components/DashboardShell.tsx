@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Package, LogOut } from "lucide-react";
+import { AlignCenterHorizontal, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 export function DashboardShell({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
@@ -18,9 +18,9 @@ export function DashboardShell({ title, subtitle, children }: { title: string; s
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="size-9 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-hero)" }}>
-              <Package className="size-5 text-primary-foreground" />
+              <AlignCenterHorizontal className="size-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">ParcelTrack</span>
+            <span className="font-bold text-lg">Pu Parcel</span>
           </div>
           <Button variant="ghost" size="sm" onClick={logout}>
             <LogOut className="size-4 mr-2" /> Sign out

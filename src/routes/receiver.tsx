@@ -9,7 +9,7 @@ import { Package as PackageIcon, CheckCircle2, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/receiver")({
-  head: () => ({ meta: [{ title: "Receiver Dashboard — ParcelTrack" }] }),
+  head: () => ({ meta: [{ title: "Receiver Dashboard — Pu Parcel" }] }),
   component: ReceiverPage,
 });
 
